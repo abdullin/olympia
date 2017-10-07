@@ -14,20 +14,23 @@ type Task struct {
 }
 
 type App struct {
-	Screen string
-	Tasks  []*Task
+	Screen  string
+	Tasks   []*Task
+	Changed chan bool
 }
 
 func Start() *App {
 	// todo - load state from the DB
+	changed := make(chan bool, 100)
 	return &App{
-		Screen: "main",
+		Screen:  "main",
+		Changed: changed,
 	}
-
 }
 
 func (a *App) AddTask(name string, priority string) {
 	a.Tasks = append(a.Tasks, &Task{name, priority, len(a.Tasks)})
+	a.Changed <- true
 }
 
 func (a *App) GetScreen() interface{} {

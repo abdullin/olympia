@@ -41,17 +41,27 @@ func main() {
 func runTodoApp(c *websocket.Conn) error {
 
 	app := todo.Start()
+
+	go func() {
+		for i := 0; i < 999; i++ {
+
+			time.Sleep(time.Second * 2)
+			app.AddTask(fmt.Sprintf("Task %d", i), "Normal")
+		}
+	}()
 	var err error
 
-	for {
+	if err = c.WriteJSON(app.GetScreen()); err != nil {
+		return err
+	}
+
+	for _ = range app.Changed {
 
 		if err = c.WriteJSON(app.GetScreen()); err != nil {
 			return err
 		}
 
-		time.Sleep(time.Second * 2)
-		app.AddTask("New task", "Normal")
-
 	}
+	return nil
 
 }
