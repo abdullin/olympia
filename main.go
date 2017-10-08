@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
+	"bitbucket.org/abdullin/olympia/pubsub"
 	"bitbucket.org/abdullin/olympia/todo"
 
 	"github.com/gorilla/websocket"
@@ -19,6 +21,22 @@ func main() {
 		},
 	}
 
+	app := todo.Start()
+	hub := pubsub.NewHub()
+
+	go func() {
+		for _ = range app.Changed {
+			hub.Publish([]string{"render"}, true)
+		}
+	}()
+
+	go func() {
+		for {
+			app.AddTask("Task", "Prio")
+			time.Sleep(time.Second * 5)
+		}
+	}()
+
 	http.HandleFunc("/todo", func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 
@@ -27,7 +45,20 @@ func main() {
 			return
 		}
 		fmt.Println("Client subscribed")
-		err = runTodoApp(conn)
+
+		var c pubsub.Channel
+
+		c, err = hub.Subscribe([]string{"render"})
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		defer c.Close()
+
+		go runRenderLoop(conn, app, c)
+
+		err = runActionLoop(conn, app)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -38,26 +69,35 @@ func main() {
 	http.ListenAndServe(":3000", nil)
 }
 
-func runTodoApp(c *websocket.Conn) error {
+type Action struct {
+	Name string                 `json:"name"`
+	Args map[string]interface{} `json:"args"`
+}
 
-	app := todo.Start()
+func runActionLoop(c *websocket.Conn, app *todo.App) error {
 
-	go func() {
-		for i := 0; i < 999; i++ {
-
-			time.Sleep(time.Second * 2)
-			app.AddTask(fmt.Sprintf("Task %d", i), "Normal")
+	for {
+		action := &Action{}
+		if err := c.ReadJSON(action); err != nil {
+			log.Printf("Error reading json: %s", err)
+			return err
 		}
-	}()
+
+		app.Dispatch(action.Name, action.Args)
+	}
+}
+
+func runRenderLoop(ws *websocket.Conn, app *todo.App, c pubsub.Channel) error {
+
 	var err error
 
-	if err = c.WriteJSON(app.GetScreen()); err != nil {
+	if err = ws.WriteJSON(app.GetScreen()); err != nil {
 		return err
 	}
 
-	for _ = range app.Changed {
+	for _ = range c.Read() {
 
-		if err = c.WriteJSON(app.GetScreen()); err != nil {
+		if err = ws.WriteJSON(app.GetScreen()); err != nil {
 			return err
 		}
 

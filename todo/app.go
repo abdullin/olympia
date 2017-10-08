@@ -1,11 +1,5 @@
 package todo
 
-import (
-	"fmt"
-
-	"bitbucket.org/abdullin/olympia/forms"
-)
-
 type Task struct {
 	Name string
 
@@ -28,25 +22,20 @@ func Start() *App {
 	}
 }
 
+func (a *App) Dispatch(action string, args map[string]interface{}) {
+}
+
 func (a *App) AddTask(name string, priority string) {
 	a.Tasks = append(a.Tasks, &Task{name, priority, len(a.Tasks)})
 	a.Changed <- true
 }
 
+// GetScreen returns screen UI for the running app
+// DEFER: we are re-rendering screen completely for now
 func (a *App) GetScreen() interface{} {
-
 	switch a.Screen {
 	case "main":
-
-		w := forms.NewWindow("Tasks ERP")
-		w.AddNav("Dashboard", false)
-		w.AddNav(fmt.Sprintf("Tasks (%d)", len(a.Tasks)), true)
-		w.AddNav("Audit", false)
-		w.AddMenu("Admin")
-		w.AddMenu("Help")
-		w.Content = renderGrid(a.Tasks)
-		return w
-
+		return renderMainForm(a.Tasks)
 	}
 	panic("Unknown state")
 
