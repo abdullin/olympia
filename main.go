@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"bitbucket.org/abdullin/olympia/pubsub"
 	"bitbucket.org/abdullin/olympia/todo"
@@ -27,13 +26,6 @@ func main() {
 	go func() {
 		for _ = range app.Changed {
 			hub.Publish([]string{"render"}, true)
-		}
-	}()
-
-	go func() {
-		for {
-			app.AddTask("Task", "Prio")
-			time.Sleep(time.Second * 5)
 		}
 	}()
 
@@ -70,20 +62,18 @@ func main() {
 }
 
 type Action struct {
-	Name string                 `json:"name"`
+	Type string                 `json:"type"`
 	Args map[string]interface{} `json:"args"`
 }
 
 func runActionLoop(c *websocket.Conn, app *todo.App) error {
-
 	for {
 		action := &Action{}
 		if err := c.ReadJSON(action); err != nil {
 			log.Printf("Error reading json: %s", err)
 			return err
 		}
-
-		app.Dispatch(action.Name, action.Args)
+		app.Dispatch(action.Type, action.Args)
 	}
 }
 

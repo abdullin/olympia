@@ -1,12 +1,5 @@
 package forms
 
-type Dialog struct {
-	Type    string      `json:"type"`
-	Title   string      `json:"title"`
-	Content interface{} `json:"content"`
-	Cancel  string      `json:"cancel"`
-	Ok      string      `json:"ok"`
-}
 type Window struct {
 	Type    string      `json:"type"`
 	Content interface{} `json:"content"`
