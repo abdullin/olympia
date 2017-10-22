@@ -1,8 +1,7 @@
 package todo
 
 type Task struct {
-	Name string
-
+	Name     string
 	Priority string
 	ID       int
 }
