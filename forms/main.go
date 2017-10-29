@@ -15,20 +15,33 @@ func NewWindow(title string) *Window {
 	}
 }
 
-func (w *Window) AddNav(text string, active bool) {
-	w.Nav = append(w.Nav, &NavItem{text, active})
+func (w *Window) AddNav(text string, active bool, action *Action) {
+	var state string
+	if active {
+		state = "active"
+	}
+
+	w.Nav = append(w.Nav, &NavItem{Text: text, State: state, Action: action})
 }
 
-func (w *Window) AddMenu(text string) {
-	w.Menu = append(w.Menu, &MenuItem{text, true})
+func (w *Window) AddNavDisabled(text string) {
+	w.Nav = append(w.Nav, &NavItem{Text: text, State: "disabled"})
+}
+
+// Disabled
+
+func (w *Window) AddMenu(text string, action *Action) {
+	w.Menu = append(w.Menu, &MenuItem{text, true, action})
 }
 
 type MenuItem struct {
-	Title  string `json:"title"`
-	Active bool   `json:"active"`
+	Title  string  `json:"title"`
+	Active bool    `json:"active"`
+	Action *Action `json:"action"`
 }
 
 type NavItem struct {
-	Text   string `json:"text"`
-	Active bool   `json:"active"`
+	Text   string  `json:"text"`
+	State  string  `json:"state"`
+	Action *Action `json:"action"`
 }

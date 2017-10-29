@@ -29,3 +29,12 @@ type Action struct {
 	Type string                 `json:"type"`
 	Args map[string]interface{} `json:"args"`
 }
+
+type Image struct {
+	Type string `json:"type"`
+	Src  string `json:"src"`
+}
+
+func NewImage(src string) *Image {
+	return &Image{Type: "image", Src: src}
+}

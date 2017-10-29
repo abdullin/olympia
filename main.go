@@ -93,5 +93,4 @@ func runRenderLoop(ws *websocket.Conn, app *todo.App, c pubsub.Channel) error {
 
 	}
 	return nil
-
 }
