@@ -5,9 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"bitbucket.org/abdullin/olympia/pubsub"
-	"bitbucket.org/abdullin/olympia/todo"
-
+	"github.com/abdullin/olympia/pubsub"
+	"github.com/abdullin/olympia/todo"
 	"github.com/gorilla/websocket"
 )
 

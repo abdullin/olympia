@@ -1,5 +1,7 @@
 package todo
 
+import "fmt"
+
 type Task struct {
 	Name     string
 	Priority string
@@ -35,6 +37,10 @@ func (a *App) Dispatch(action string, args map[string]interface{}) {
 	case "add-task-cancel":
 		a.Screen = "main"
 		a.Changed <- true
+
+	default:
+		fmt.Println("Unknown dispatch", action, "with args", args)
+
 	}
 }
 

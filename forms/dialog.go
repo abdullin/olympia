@@ -25,11 +25,6 @@ func (d *Dialog) AddCancelButton(text, actionName string) {
 	d.CancelButton = &Button{Text: text, Action: &Action{Type: actionName}}
 }
 
-type Action struct {
-	Type string                 `json:"type"`
-	Args map[string]interface{} `json:"args"`
-}
-
 type Image struct {
 	Type string `json:"type"`
 	Src  string `json:"src"`
