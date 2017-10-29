@@ -1,0 +1,4 @@
+This is a prototype View Engine server as discussed during my talk at
+KanDDDinsky conference in Berlin (october, 2017).
+
+It also requires a client UI to work
