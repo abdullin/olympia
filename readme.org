@@ -10,7 +10,7 @@ KanDDDinsky conference in Berlin (october, 2017).
 go run main.go
 #+END_SRC
 
-2. Install web packages (preferrably via [yarn](https://yarnpkg.com/en/)) and launch web UI:
+2. Install web packages (preferrably via [[https://yarnpkg.com/en/][yarn]]) and launch web UI:
 
 #+BEGIN_SRC bash
 cd web
@@ -18,7 +18,7 @@ yarn install
 yarn start
 #+END_SRC
 
-Afterwards direct your browser at [localhost:3000](http://localhost:3000).
+Afterwards direct your browser at  [[http://localhost:3000][localhost:3000]].
 
 
 
