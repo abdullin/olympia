@@ -23,6 +23,10 @@ func Start() *App {
 	}
 }
 
+const (
+	actionShowGrid string = "show-grid-sample"
+)
+
 func (a *App) Dispatch(action string, args map[string]interface{}) {
 	switch action {
 	case "show-add-task-form":
@@ -36,6 +40,9 @@ func (a *App) Dispatch(action string, args map[string]interface{}) {
 		a.Changed <- true
 	case "add-task-cancel":
 		a.Screen = "main"
+		a.Changed <- true
+	case actionShowGrid:
+		a.Screen = "grid-sample"
 		a.Changed <- true
 
 	default:
@@ -52,9 +59,11 @@ func (a *App) AddTask(name string, priority string) {
 func (a *App) GetScreen() interface{} {
 	switch a.Screen {
 	case "main":
-		return renderMainForm(a.Tasks)
+		return renderTaskWindow(a.Tasks)
 	case "add-task-form":
 		return renderAddTaskScreen()
+	case "grid-sample":
+		return renderExerciseWindow()
 	}
 	panic("Unknown state")
 

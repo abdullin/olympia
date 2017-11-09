@@ -1,41 +1,31 @@
 package forms
 
-type DataGridColumn struct {
-	Text string `json:"text"`
+type Grid struct {
 	Type string `json:"type"`
+	Rows []*Row `json:"rows"`
 }
 
-type DataGridRow struct {
-	Cells []*DataGridCell `json:"cells"`
+type Row struct {
+	Cols []*Col `json:"cols"`
 }
 
-type DataGridCell struct {
-	Value interface{} `json:"val"`
+type Col struct {
+	Content interface{} `json:"content"`
+	Steps   int         `json:"steps"`
 }
 
-type DataGrid struct {
-	Type      string            `json:"type"`
-	CanDelete bool              `json:"canDelete"`
-	CanEdit   bool              `json:"canEdit"`
-	Rows      []*DataGridRow    `json:"rows"`
-	Columns   []*DataGridColumn `json:"columns"`
+func NewGrid() *Grid {
+	return &Grid{Type: "grid", Rows: []*Row{}}
 }
 
-func NewGrid() *DataGrid {
-	return &DataGrid{Type: "data-grid", Rows: []*DataGridRow{}}
+func (g *Grid) AddRow() *Row {
+	r := &Row{Cols: []*Col{}}
+	g.Rows = append(g.Rows, r)
+	return r
 }
 
-func (d *DataGrid) AddTextColumn(text string) {
-	d.Columns = append(d.Columns, &DataGridColumn{Text: text})
-}
-
-func (d *DataGrid) AddRow(args ...interface{}) {
-	cells := make([]*DataGridCell, len(args), len(args))
-
-	for i := 0; i < len(args); i++ {
-		cells[i] = &DataGridCell{Value: args[i]}
-	}
-	row := &DataGridRow{Cells: cells}
-	d.Rows = append(d.Rows, row)
-
+func (r *Row) AddCol(content interface{}) *Col {
+	c := &Col{Content: content}
+	r.Cols = append(r.Cols, c)
+	return c
 }

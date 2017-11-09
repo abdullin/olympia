@@ -58,12 +58,21 @@ const NavTree = ({items = [], dispatch}) => (
 );
 
 
-const Window = ({content, title, menu, nav, dispatch}) => (
-    <div className="">
-      <NavBar items={menu} title={title} dispatch={dispatch}/>
-      <SplitContainer right={<Render {...content} dispatch={dispatch}/>}
-                      left={<NavTree items={nav} dispatch={dispatch} />} />
-    </div>
-);
+const Window = ({content, title, menu, nav, dispatch}) => {
+
+
+
+    var core = <Render {...content} dispatch={dispatch}/>;
+    if (nav != null && nav.length > 0){
+        core = <SplitContainer right={core}
+        left={<NavTree items={nav} dispatch={dispatch} />} />;
+    }
+    
+    
+    return <div className="">
+        <NavBar items={menu} title={title} dispatch={dispatch}/>
+        {core}
+        </div>;
+};
 
 export default Window;

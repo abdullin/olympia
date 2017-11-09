@@ -14,6 +14,10 @@ import Window from './Window';
 
 import Image from './Image';
 
+import Button from './Button';
+
+import Grid from './Grid';
+
 import Placeholder from './Placeholder';
 
 // Render component takes any json design and returns full model
@@ -83,8 +87,13 @@ var color = [
         return <Card {...rest} />;
     case 'window':
         return <Window {...rest} />;
+    case 'button':
+        return <Button {...rest} />;
     case 'placeholder':
         return <Placeholder {...rest} />;
+    case 'grid':
+        return <Grid {...rest} />;
+        
     default:
         return (<p>Unknown render type {type}</p>);
     }
