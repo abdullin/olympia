@@ -2,12 +2,13 @@
 
 This is a prototype View Engine server as discussed during my talk at
 KanDDDinsky conference in Berlin (october, 2017).
+
 * Getting started
 
 1. Launch view engine api by running:
 
 #+BEGIN_SRC bash
-go run main.go
+go run demo/main.go
 #+END_SRC
 
 2. Install web packages (preferrably via [[https://yarnpkg.com/en/][yarn]]) and launch web UI:
@@ -25,7 +26,7 @@ Afterwards direct your browser at  [[http://localhost:3000][localhost:3000]].
 The project is currently under "all rights reserved" (deferring the
 license choice till someone actually needs to use it).
 
-The project uses
+The project uses:
 
 - Copied a few charts from [[https://github.com/kennetpostigo/component-kit][component-kit]] (MIT)
 - Copied in-memory part of the pub-sub from [[https://github.com/gocontrib/pubsub/blob/master/LICENSE][go-contrib/pub-sub]] (MIT)
