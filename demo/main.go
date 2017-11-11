@@ -77,19 +77,15 @@ func runActionLoop(c *websocket.Conn, app *todo.App) error {
 }
 
 func runRenderLoop(ws *websocket.Conn, app *todo.App, c pubsub.Channel) error {
-
 	var err error
-
 	if err = ws.WriteJSON(app.GetScreen()); err != nil {
 		return err
 	}
-
 	for _ = range c.Read() {
 
 		if err = ws.WriteJSON(app.GetScreen()); err != nil {
 			return err
 		}
-
 	}
 	return nil
 }
