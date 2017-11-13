@@ -245,7 +245,7 @@ func renderAnswers(a *App) interface{} {
 
 	r0 := g.AddRow()
 	r0.AddCol(nil)
-	r0.AddCol(forms.NewTitle("Правильные ответы", 1)).Steps = 8
+	r0.AddCol(forms.NewTitle("Ответы", 1)).Steps = 4
 	r0.AddCol(nil)
 
 	rGrid := g.AddRow()
@@ -254,7 +254,29 @@ func renderAnswers(a *App) interface{} {
 
 	t := forms.NewTable()
 	cGrid := rGrid.AddCol(t)
-	cGrid.Steps = 6
+	cGrid.Steps = 5
+
+	correct := 0
+	incorrect := 0
+
+	for _, a := range a.Scores {
+		if a == 0 {
+			incorrect++
+		} else {
+			correct++
+		}
+	}
+
+	data := make([]forms.PiePoint, 2, 2)
+	data[0].X = "Правильно"
+	data[0].Y = float32(correct)
+
+	data[1].X = "Неправильно"
+	data[1].Y = float32(incorrect)
+
+	chart := forms.NewPieChart(data)
+	cellChart := rGrid.AddCol(chart)
+	cellChart.Steps = 5
 
 	rGrid.AddCol(nil)
 
