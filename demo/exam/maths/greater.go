@@ -2,29 +2,34 @@ package maths
 
 import (
 	"math/rand"
+	"strconv"
 )
 
 type PickGreater struct {
-	First  int
-	Second int
+	First  string
+	Second string
 
-	CorrectAnswer  int
-	ProvidedAnswer int
+	CorrectAnswer  string
+	ProvidedAnswer string
 }
 
 func Greater() *PickGreater {
 
-	t := &PickGreater{
-		First:  rand.Intn(100),
-		Second: rand.Intn(100),
+	first := rand.Intn(99) + 1
+	second := rand.Intn(99) + 1
+
+	for second == first {
+		second = rand.Intn(99) + 1
 	}
-	if t.First > t.Second {
+
+	t := &PickGreater{
+		First:  strconv.Itoa(first),
+		Second: strconv.Itoa(second),
+	}
+	if first > second {
 		t.CorrectAnswer = t.First
-	} else if t.First < t.Second {
+	} else if first < second {
 		t.CorrectAnswer = t.Second
-	} else {
-		t.First++
-		t.CorrectAnswer = t.First
 	}
 	return t
 }

@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"fmt"
@@ -6,11 +6,16 @@ import (
 	"net/http"
 
 	"github.com/abdullin/olympia/demo/pubsub"
-	"github.com/abdullin/olympia/demo/todo"
 	"github.com/gorilla/websocket"
 )
 
-func main() {
+type App interface {
+	Changed() chan bool
+	Dispatch(kind string, args map[string]interface{})
+	GetScreen() interface{}
+}
+
+func ConfigureSingleton(url string, app App) {
 
 	var upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
@@ -19,11 +24,10 @@ func main() {
 		},
 	}
 
-	app := todo.Start()
 	hub := pubsub.NewHub()
 
 	go func() {
-		for _ = range app.Changed {
+		for _ = range app.Changed() {
 			hub.Publish([]string{"render"}, true)
 		}
 	}()
@@ -57,7 +61,6 @@ func main() {
 
 	})
 
-	http.ListenAndServe(":3001", nil)
 }
 
 type Action struct {
@@ -65,7 +68,7 @@ type Action struct {
 	Args map[string]interface{} `json:"args"`
 }
 
-func runActionLoop(c *websocket.Conn, app *todo.App) error {
+func runActionLoop(c *websocket.Conn, app App) error {
 	for {
 		action := &Action{}
 		if err := c.ReadJSON(action); err != nil {
@@ -76,7 +79,7 @@ func runActionLoop(c *websocket.Conn, app *todo.App) error {
 	}
 }
 
-func runRenderLoop(ws *websocket.Conn, app *todo.App, c pubsub.Channel) error {
+func runRenderLoop(ws *websocket.Conn, app App, c pubsub.Channel) error {
 	var err error
 	if err = ws.WriteJSON(app.GetScreen()); err != nil {
 		return err

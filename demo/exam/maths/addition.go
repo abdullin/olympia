@@ -30,9 +30,12 @@ func SimpleAddition() *MultipleChoice {
 
 		strconv.Itoa(p1 + p2 + 3),
 
-		strconv.Itoa(p1 + p2),
+		answer,
 	}
-
+	for i := range options {
+		j := rand.Intn(i + 1)
+		options[i], options[j] = options[j], options[i]
+	}
 	return &MultipleChoice{
 		Question:      q,
 		Options:       options,

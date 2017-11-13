@@ -1,6 +1,10 @@
-package exam
+package main
 
-import "github.com/abdullin/olympia/demo/exam/maths"
+import (
+	"math/rand"
+
+	"github.com/abdullin/olympia/demo/exam/maths"
+)
 
 const TaskKindGreater string = "pick-greater"
 
@@ -12,7 +16,7 @@ func SimpleExam() []Task {
 	var tasks []Task
 
 	for i := 0; i < 10; i++ {
-		switch i % 2 {
+		switch rand.Intn(2) {
 		case 0:
 			tasks = append(tasks, maths.Greater())
 		default:
@@ -21,5 +25,4 @@ func SimpleExam() []Task {
 		}
 	}
 	return tasks
-
 }

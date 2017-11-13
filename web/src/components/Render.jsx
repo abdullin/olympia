@@ -22,6 +22,13 @@ import Placeholder from './Placeholder';
 
 // Render component takes any json design and returns full model
 const Render = ({type, responsive, width, height, ...rest}) => {
+
+    if (type == null) {
+        return null;
+    }
+
+
+    
     switch(type){
     case 'image':
         return <Image {...rest} />;
