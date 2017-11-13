@@ -30,3 +30,25 @@ func NewPieChart(data []PiePoint) *PieChart {
 		Data:   data,
 	}
 }
+
+type LineChart struct {
+	Type   string      `json:"type"`
+	Width  int         `json:"width"`
+	Height int         `json:"height"`
+	Data   []LinePoint `json:"data"`
+}
+
+type LinePoint struct {
+	X string  `json:"x"`
+	Y float32 `json:"y"`
+}
+
+func NewLineChart(data []LinePoint) *LineChart {
+
+	return &LineChart{
+		Type:   "line-chart",
+		Height: 200,
+		Width:  200,
+		Data:   data,
+	}
+}

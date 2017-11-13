@@ -31,10 +31,22 @@ type App struct {
 	Changes       chan bool
 	Position      int
 	ShowingAnswer bool
+
+	Grades []float32
 }
 
 func (a *App) Changed() chan bool {
 	return a.Changes
+}
+
+func (a *App) GradeTest() {
+
+	var score float32
+	for _, s := range a.Scores {
+		score += float32(s)
+	}
+
+	a.Grades = append(a.Grades, score/float32(len(a.Scores)))
 }
 
 func (a *App) Dispatch(kind string, args map[string]interface{}) {
@@ -43,6 +55,7 @@ func (a *App) Dispatch(kind string, args map[string]interface{}) {
 	case "start-test":
 		a.Position = 0
 		a.Tasks = SimpleExam()
+		a.ShowingAnswer = false
 		l := len(a.Tasks)
 		a.Scores = make([]int, l, l)
 		a.Answers = make([]string, l, l)
@@ -63,6 +76,8 @@ func (a *App) Dispatch(kind string, args map[string]interface{}) {
 
 			if a.Position == len(a.Tasks)-1 {
 				a.Screen = "answers"
+				a.GradeTest()
+
 			} else {
 				a.ShowingAnswer = false
 				a.Position++
@@ -85,8 +100,8 @@ func (a *App) Dispatch(kind string, args map[string]interface{}) {
 
 			if a.Position == len(a.Tasks)-1 {
 				a.Screen = "answers"
+				a.GradeTest()
 			} else {
-
 				a.ShowingAnswer = false
 				a.Position++
 			}
@@ -254,7 +269,12 @@ func renderAnswers(a *App) interface{} {
 
 	t := forms.NewTable()
 	cGrid := rGrid.AddCol(t)
-	cGrid.Steps = 5
+	cGrid.Steps = 10
+
+	rGrid.AddCol(nil)
+
+	chartRow := g.AddRow()
+	chartRow.AddCol(nil)
 
 	correct := 0
 	incorrect := 0
@@ -275,10 +295,22 @@ func renderAnswers(a *App) interface{} {
 	data[1].Y = float32(incorrect)
 
 	chart := forms.NewPieChart(data)
-	cellChart := rGrid.AddCol(chart)
+	cellChart := chartRow.AddCol(chart)
 	cellChart.Steps = 5
 
-	rGrid.AddCol(nil)
+	var lines []forms.LinePoint
+
+	for _, s := range a.Grades {
+
+		var l forms.LinePoint
+		l.X = ""
+		l.Y = s
+		lines = append(lines, l)
+	}
+	lineChart := forms.NewLineChart(lines)
+
+	chartRow.AddCol(lineChart).Steps = 5
+	chartRow.AddCol(nil)
 
 	t.AddTextColumn("Задание")
 	t.AddTextColumn("Ответ")
