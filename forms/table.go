@@ -7,6 +7,7 @@ type DataTableColumn struct {
 
 type DataTableRow struct {
 	Cells []*DataTableCell `json:"cells"`
+	Style string           `json:"style"`
 }
 
 type DataTableCell struct {
@@ -29,7 +30,7 @@ func (d *DataTable) AddTextColumn(text string) {
 	d.Columns = append(d.Columns, &DataTableColumn{Text: text})
 }
 
-func (d *DataTable) AddRow(args ...interface{}) {
+func (d *DataTable) AddRow(args ...interface{}) *DataTableRow {
 	cells := make([]*DataTableCell, len(args), len(args))
 
 	for i := 0; i < len(args); i++ {
@@ -37,5 +38,6 @@ func (d *DataTable) AddRow(args ...interface{}) {
 	}
 	row := &DataTableRow{Cells: cells}
 	d.Rows = append(d.Rows, row)
+	return row
 
 }

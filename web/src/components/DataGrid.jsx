@@ -36,14 +36,18 @@ const RowEditor = ({canEdit, canDelete}) => {
     return opts.length == 0 ? null : <td>{opts}</td>;
 };
 
-const Row = ({cells = [], columns, ...props}) => (
-    <tr>
+const Row = ({cells = [], columns, ...props, style}) => {
+
+    var cn = style == null ? null : "table-"+style;
+
+    
+    return <tr className={cn}>
       {cells.map((cell, i) => <Cell {...cell} column={columns[i]}/>)}
         <RowEditor {...props}/>
     
 
-    </tr>
-);
+    </tr>;
+};
 
 const task = {
     type: "show-add-task-form",

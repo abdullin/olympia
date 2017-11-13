@@ -27,6 +27,7 @@ type App struct {
 	Screen        string
 	Tasks         []Task
 	Scores        []int
+	Answers       []string
 	Changes       chan bool
 	Position      int
 	ShowingAnswer bool
@@ -42,7 +43,9 @@ func (a *App) Dispatch(kind string, args map[string]interface{}) {
 	case "start-test":
 		a.Position = 0
 		a.Tasks = SimpleExam()
-		a.Scores = make([]int, len(a.Tasks), len(a.Tasks))
+		l := len(a.Tasks)
+		a.Scores = make([]int, l, l)
+		a.Answers = make([]string, l, l)
 
 		a.Screen = "exam"
 		a.Changes <- true
@@ -51,6 +54,8 @@ func (a *App) Dispatch(kind string, args map[string]interface{}) {
 	case "correct":
 		a.Scores[a.Position] = 1
 		a.ShowingAnswer = true
+
+		a.Answers[a.Position] = args["provided"].(string)
 		a.Changes <- true
 
 		go func() {
@@ -71,6 +76,8 @@ func (a *App) Dispatch(kind string, args map[string]interface{}) {
 
 	case "incorrect":
 		a.ShowingAnswer = true
+
+		a.Answers[a.Position] = args["provided"].(string)
 		a.Changes <- true
 
 		go func() {
@@ -118,8 +125,6 @@ func Start() *App {
 
 func renderExamWindow(a *App) interface{} {
 
-	correct := forms.NewAction("correct")
-	incorrect := forms.NewAction("incorrect")
 	nop := forms.NewAction("nop")
 
 	title := fmt.Sprintf("%d / %d", a.Position+1, len(a.Tasks))
@@ -150,10 +155,13 @@ func renderExamWindow(a *App) interface{} {
 				}
 			} else {
 				if o == k.CorrectAnswer {
-					b.Action = correct
+					b.Action = forms.NewAction("correct")
+
 				} else {
-					b.Action = incorrect
+					b.Action = forms.NewAction("incorrect")
 				}
+
+				b.Action.Args["provided"] = o
 			}
 
 			r.AddCol(b)
@@ -183,26 +191,30 @@ func renderExamWindow(a *App) interface{} {
 		r.AddCol(nil)
 
 		if k.CorrectAnswer == k.First {
-			b.Action = correct
-			b2.Action = incorrect
 
 			if a.ShowingAnswer {
 				b.Style = "success"
 				b2.Style = "danger"
-				b.Action = nop
-				b2.Action = nop
+
+			} else {
+				b.Action = forms.NewAction("correct")
+				b2.Action = forms.NewAction("incorrect")
+				b.Action.Args["provided"] = b.Text
+				b2.Action.Args["provided"] = b2.Text
+
 			}
 
 		} else {
-			b2.Action = correct
-			b.Action = incorrect
 
 			if a.ShowingAnswer {
 				b2.Style = "success"
 				b.Style = "danger"
+			} else {
 
-				b.Action = nop
-				b2.Action = nop
+				b2.Action = forms.NewAction("correct")
+				b.Action = forms.NewAction("incorrect")
+				b.Action.Args["provided"] = b.Text
+				b2.Action.Args["provided"] = b2.Text
 			}
 		}
 
@@ -232,16 +244,27 @@ func renderAnswers(a *App) interface{} {
 
 	t.AddTextColumn("Задание")
 	t.AddTextColumn("Ответ")
-	t.AddTextColumn("Правильно?")
+	t.AddTextColumn("Правильный")
 
 	for i, ts := range a.Tasks {
 		switch k := ts.(type) {
 		case *maths.PickGreater:
 
-			t.AddRow("Больше", k.CorrectAnswer, a.Scores[i] == 1)
-		case *maths.MultipleChoice:
+			r := t.AddRow("Больше", a.Answers[i], k.CorrectAnswer)
 
-			t.AddRow("Сложение", k.CorrectAnswer, a.Scores[i] == 1)
+			if a.Scores[i] == 0 {
+				r.Style = "danger"
+			} else {
+				r.Style = "success"
+			}
+		case *maths.MultipleChoice:
+			r := t.AddRow("Сложение", a.Answers[i], k.CorrectAnswer)
+
+			if a.Scores[i] == 0 {
+				r.Style = "danger"
+			} else {
+				r.Style = "success"
+			}
 		}
 	}
 
