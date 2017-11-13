@@ -7,8 +7,13 @@ const Row = ({cols, dispatch}) => {
     </div>;
 };
 
-const Col = ({content, dispatch}) => {
-    return <div className="col">
+const Col = ({content, dispatch, steps}) => {
+
+    var style = "col";
+    if (steps) {
+        style += " col-" + steps;
+    }
+    return <div className={style}>
         <Render {...content} dispatch={dispatch} />
         </div>;
 };

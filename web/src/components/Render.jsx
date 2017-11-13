@@ -16,6 +16,8 @@ import Image from './Image';
 
 import Button from './Button';
 
+import Label from './Label';
+
 import Grid from './Grid';
 
 import Placeholder from './Placeholder';
@@ -100,7 +102,8 @@ var color = [
         return <Placeholder {...rest} />;
     case 'grid':
         return <Grid {...rest} />;
-        
+    case 'label':
+        return <Label {...rest} />;
     default:
         return (<p>Unknown render type {type}</p>);
     }

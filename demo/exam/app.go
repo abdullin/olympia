@@ -136,6 +136,12 @@ func renderExamWindow(a *App) interface{} {
 	case *maths.MultipleChoice:
 
 		g := forms.NewGrid()
+
+		r0 := g.AddRow()
+		r0.AddCol(nil)
+		r0.AddCol(forms.NewTitle(k.Question, 1)).Steps = 6
+		r0.AddCol(nil)
+
 		r := g.AddRow()
 		r.AddCol(nil)
 
@@ -174,6 +180,12 @@ func renderExamWindow(a *App) interface{} {
 
 		w.AddMenu("Выберите наибольшее число", nil)
 		g := forms.NewGrid()
+
+		r0 := g.AddRow()
+		r0.AddCol(nil)
+		r0.AddCol(forms.NewTitle("Что больше?", 1)).Steps = 6
+		r0.AddCol(nil)
+
 		r := g.AddRow()
 		r.AddCol(nil)
 
@@ -231,16 +243,20 @@ func renderAnswers(a *App) interface{} {
 
 	g := forms.NewGrid()
 
-	g.AddRow()
+	r0 := g.AddRow()
+	r0.AddCol(nil)
+	r0.AddCol(forms.NewTitle("Правильные ответы", 1)).Steps = 8
+	r0.AddCol(nil)
+
 	rGrid := g.AddRow()
 
-	rGrid.AddCol(nil).Steps = 1
+	rGrid.AddCol(nil)
 
 	t := forms.NewTable()
 	cGrid := rGrid.AddCol(t)
 	cGrid.Steps = 6
 
-	rGrid.AddCol(nil).Steps = 1
+	rGrid.AddCol(nil)
 
 	t.AddTextColumn("Задание")
 	t.AddTextColumn("Ответ")
