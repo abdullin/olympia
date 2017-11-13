@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/abdullin/olympia/demo/exam/maths"
@@ -300,10 +301,10 @@ func renderAnswers(a *App) interface{} {
 
 	var lines []forms.LinePoint
 
-	for _, s := range a.Grades {
+	for i, s := range a.Grades {
 
 		var l forms.LinePoint
-		l.X = ""
+		l.X = strconv.Itoa(i + 1)
 		l.Y = s
 		lines = append(lines, l)
 	}
