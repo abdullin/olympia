@@ -17,6 +17,12 @@ func NewButton(text string, action *Action) *Button {
 	}
 }
 
+func (b *Button) EnlargeAndFill() *Button {
+	b.Large = true
+	b.Fill = true
+	return b
+}
+
 type Label struct {
 	Type  string `json:"type"`
 	Text  string `json:"text"`

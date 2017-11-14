@@ -46,7 +46,6 @@ func (a *App) GradeTest() {
 	for _, s := range a.Scores {
 		score += float32(s)
 	}
-
 	a.Grades = append(a.Grades, score/float32(len(a.Scores)))
 }
 
@@ -83,9 +82,7 @@ func (a *App) Dispatch(kind string, args map[string]interface{}) {
 				a.ShowingAnswer = false
 				a.Position++
 			}
-
 			a.Changes <- true
-
 		}()
 
 		return
@@ -153,10 +150,8 @@ func renderExamWindow(a *App) interface{} {
 
 		g := forms.NewGrid()
 
-		r0 := g.AddRow()
-		r0.AddCol(nil)
-		r0.AddCol(forms.NewTitle(k.Question, 1)).Steps = 6
-		r0.AddCol(nil)
+		title := forms.NewTitle(k.Question, 1)
+		g.AddRowItems(nil, title, nil).SetSpans(0, 6, 0)
 
 		r := g.AddRow()
 		r.AddCol(nil)
@@ -182,7 +177,6 @@ func renderExamWindow(a *App) interface{} {
 				} else {
 					b.Action = forms.NewAction("incorrect")
 				}
-
 				b.Action.Args["provided"] = o
 			}
 
@@ -197,43 +191,28 @@ func renderExamWindow(a *App) interface{} {
 		w.AddMenu("Выберите наибольшее число", nil)
 		g := forms.NewGrid()
 
-		r0 := g.AddRow()
-		r0.AddCol(nil)
-		r0.AddCol(forms.NewTitle("Что больше?", 1)).Steps = 6
-		r0.AddCol(nil)
+		title := forms.NewTitle("Что больше?", 1)
+		g.AddRowItems(nil, title, nil).SetSpans(0, 6, 0)
 
-		r := g.AddRow()
-		r.AddCol(nil)
+		b := forms.NewButton(k.First, nop).EnlargeAndFill()
 
-		b := forms.NewButton(k.First, nop)
-		b.Fill = true
-		b.Large = true
+		b2 := forms.NewButton(k.Second, nop).EnlargeAndFill()
 
-		r.AddCol(b)
-
-		b2 := forms.NewButton(k.Second, nop)
-		b2.Fill = true
-		b2.Large = true
-
-		r.AddCol(b2)
-		r.AddCol(nil)
+		g.AddRowItems(nil, b, b2, nil)
 
 		if k.CorrectAnswer == k.First {
 
 			if a.ShowingAnswer {
 				b.Style = "success"
 				b2.Style = "danger"
-
 			} else {
 				b.Action = forms.NewAction("correct")
 				b2.Action = forms.NewAction("incorrect")
 				b.Action.Args["provided"] = b.Text
 				b2.Action.Args["provided"] = b2.Text
-
 			}
 
 		} else {
-
 			if a.ShowingAnswer {
 				b2.Style = "success"
 				b.Style = "danger"
@@ -245,21 +224,16 @@ func renderExamWindow(a *App) interface{} {
 				b2.Action.Args["provided"] = b2.Text
 			}
 		}
-
 		w.Content = g
-
 	}
 
 	return w
-
 }
 
 func renderAnswers(a *App) interface{} {
 	w := forms.NewWindow("Результаты")
 
-	next := forms.NewButton("Начать новый тест", forms.NewAction("start-test"))
-	next.Fill = true
-	next.Style = "information"
+	next := forms.NewButton("Начать новый тест", forms.NewAction("start-test")).EnlargeAndFill()
 
 	t := renderSummaryTable(a)
 
@@ -357,9 +331,7 @@ func renderMainWindow(a *App) interface{} {
 
 	startAction := forms.NewAction("start-test")
 
-	b := forms.NewButton("Новый тест", startAction)
-	b.Large = true
-	b.Fill = true
+	b := forms.NewButton("Новый тест", startAction).EnlargeAndFill()
 
 	g.AddRowItems(nil, b, nil)
 
