@@ -257,62 +257,30 @@ func renderExamWindow(a *App) interface{} {
 func renderAnswers(a *App) interface{} {
 	w := forms.NewWindow("Результаты")
 
+	next := forms.NewButton("Начать новый тест", forms.NewAction("start-test"))
+	next.Fill = true
+	next.Style = "information"
+
+	t := renderSummaryTable(a)
+
+	history := renderHistoryChart(a)
+	stats := renderExamChart(a)
+
 	g := forms.NewGrid()
+	g.AddRowItems(nil, forms.NewTitle("Ответы", 1), nil).SetSpans(0, 4, 0)
+	g.AddRowItems(nil, t, nil).SetSpans(0, 10, 0)
+	g.AddRowItems(nil, stats, history, nil).SetSpans(0, 5, 5, 0)
+	g.AddRowItems(nil, next, nil)
 
-	r0 := g.AddRow()
-	r0.AddCol(nil)
-	r0.AddCol(forms.NewTitle("Ответы", 1)).Steps = 4
-	r0.AddCol(nil)
+	w.Content = g
 
-	rGrid := g.AddRow()
+	return w
 
-	rGrid.AddCol(nil)
+}
+
+func renderSummaryTable(a *App) *forms.DataTable {
 
 	t := forms.NewTable()
-	cGrid := rGrid.AddCol(t)
-	cGrid.Steps = 10
-
-	rGrid.AddCol(nil)
-
-	chartRow := g.AddRow()
-	chartRow.AddCol(nil)
-
-	correct := 0
-	incorrect := 0
-
-	for _, a := range a.Scores {
-		if a == 0 {
-			incorrect++
-		} else {
-			correct++
-		}
-	}
-
-	data := make([]forms.PiePoint, 2, 2)
-	data[0].X = "Правильно"
-	data[0].Y = float32(correct)
-
-	data[1].X = "Неправильно"
-	data[1].Y = float32(incorrect)
-
-	chart := forms.NewPieChart(data)
-	cellChart := chartRow.AddCol(chart)
-	cellChart.Steps = 5
-
-	var lines []forms.LinePoint
-
-	for i, s := range a.Grades {
-
-		var l forms.LinePoint
-		l.X = strconv.Itoa(i + 1)
-		l.Y = s
-		lines = append(lines, l)
-	}
-	lineChart := forms.NewLineChart(lines)
-
-	chartRow.AddCol(lineChart).Steps = 5
-	chartRow.AddCol(nil)
-
 	t.AddTextColumn("Задание")
 	t.AddTextColumn("Ответ")
 	t.AddTextColumn("Правильный")
@@ -338,20 +306,45 @@ func renderAnswers(a *App) interface{} {
 			}
 		}
 	}
+	return t
+}
 
-	last := g.AddRow()
+func renderExamChart(a *App) *forms.PieChart {
 
-	next := forms.NewButton("Начать новый тест", forms.NewAction("start-test"))
-	next.Fill = true
-	next.Style = "information"
+	correct := 0
+	incorrect := 0
 
-	last.AddCol(nil)
-	last.AddCol(next)
-	last.AddCol(nil)
+	for _, a := range a.Scores {
+		if a == 0 {
+			incorrect++
+		} else {
+			correct++
+		}
+	}
 
-	w.Content = g
+	data := make([]forms.PiePoint, 2, 2)
+	data[0].X = "Правильно"
+	data[0].Y = float32(correct)
 
-	return w
+	data[1].X = "Неправильно"
+	data[1].Y = float32(incorrect)
+
+	chart := forms.NewPieChart(data)
+	return chart
+}
+
+func renderHistoryChart(a *App) interface{} {
+
+	var lines []forms.LinePoint
+
+	for i, s := range a.Grades {
+
+		var l forms.LinePoint
+		l.X = strconv.Itoa(i + 1)
+		l.Y = s
+		lines = append(lines, l)
+	}
+	return forms.NewLineChart(lines)
 
 }
 
@@ -362,19 +355,13 @@ func renderMainWindow(a *App) interface{} {
 
 	g := forms.NewGrid()
 
-	r1 := g.AddRow()
-
 	startAction := forms.NewAction("start-test")
 
 	b := forms.NewButton("Новый тест", startAction)
 	b.Large = true
 	b.Fill = true
 
-	r1.AddCol(nil)
-
-	r1.AddCol(b)
-
-	r1.AddCol(nil)
+	g.AddRowItems(nil, b, nil)
 
 	w.Content = g
 	return w
