@@ -1,17 +1,22 @@
 * About
 
 This is a prototype View Engine server as discussed during my talk at
-KanDDDinsky conference in Berlin (october, 2017).
+KanDDDinsky conference in Berlin (october, 2017). 
+
+This demo doesn't use event-driven UI model. It sends full UI
+layout snapshot on every change.
 
 * Getting started
 
-1. Launch view engine api by running:
+First, run the demo math exam app (imagine, you are a Russian 1st-grader):
 
 #+BEGIN_SRC bash
-go run demo/main.go
+go run demo/exam/*.go
 #+END_SRC
 
-2. Install web packages (preferrably via [[https://yarnpkg.com/en/][yarn]]) and launch web UI:
+Make sure the app gets through the firewall (OSX might try to block).
+
+Second, install web packages (preferrably via [[https://yarnpkg.com/en/][yarn]]) and launch web UI:
 
 #+BEGIN_SRC bash
 cd web
