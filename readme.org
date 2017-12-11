@@ -1,9 +1,12 @@
 * About
 
 This is a prototype View Engine server as discussed during my talk at
-KanDDDinsky conference in Berlin (october, 2017). 
+KanDDDinsky conference in Berlin (october, 2017). You can also check out
+[[https://twitter.com/abdullin/status/924552198457102336][this tweet thread]] 
+for the concept.
 
-This demo doesn't use event-driven UI model. It sends full UI
+
+Unlike the full design, this prototype doesn't use event-driven UI model. It sends full UI
 layout snapshot on every change.
 
 * Getting started
