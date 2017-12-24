@@ -19,6 +19,8 @@ func Test(t *testing.T) {
 	d.SetContent(h.ID)
 	d.Show()
 
+	h.OnClick(d.DoSetTitle("YEP!"))
+
 	time.Sleep(time.Millisecond)
 
 }
@@ -31,7 +33,5 @@ func printEvents(c chan interface{}) {
 		} else {
 			fmt.Printf("%T: %s\n", e, string(b))
 		}
-
 	}
-
 }

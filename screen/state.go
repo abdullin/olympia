@@ -30,6 +30,8 @@ func (s *state) apply(e interface{}) {
 	case *DialogShown:
 		s.top = t.ID
 		s.controls[t.ID].(*dialogCtl).visible = true
+	case *DialogTitleChanged:
+		s.controls[t.ID].(*dialogCtl).title = t.Title
 	default:
 		panic("Unknown event type")
 	}
